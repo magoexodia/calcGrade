@@ -10,14 +10,16 @@ import javax.swing.JOptionPane;
 import banco.BancoDados;
 
 public class Filtragem {
-	private final String Aberto = "aberto".toUpperCase(); 
-	private final String Concluido = "conclu".toUpperCase();
-	private final String EmCurso = "Em cur".toUpperCase();
-	private final String Indefinido = "Indefi".toUpperCase();
+	private final String Aberto = "1aberto1".toUpperCase(); 
+	private final String Concluido = "2conclu2".toUpperCase();
+	private final String EmCurso = "3Em cur3".toUpperCase();
+	private final String Indefinido = "0Indefi0".toUpperCase();
 	public final String extension = ".bancoDeListas"; 
 	public final String sep1 = ";"; 
 	public final String sep2 = "-"; 
-	protected Set<Integer> perc;
+	private Set<Integer> perc;
+	
+	public static final Filtragem filtro = new Filtragem();
 	
 	public String getAberto() {
 		return Aberto;
@@ -40,7 +42,7 @@ public class Filtragem {
 	
 	//permite filtrar pelo inicio, final ou pelo 2o pedaço e jogar num arquivo
 	public void filtra(String caminho, String filtro) {
-		List<String> arquivo = new BancoDados().pegaObjetoList(caminho);
+		List<String> arquivo = BancoDados.bdados.pegaObjetoList(caminho);
 		
 		boolean anexar = false;
 		for (String um : arquivo){
@@ -52,7 +54,7 @@ public class Filtragem {
 	}	
 
 	public void filtraTudo(String caminho) {
-		List<String> arquivo = new BancoDados().pegaObjetoList(caminho);
+		List<String> arquivo = BancoDados.bdados.pegaObjetoList(caminho);
 		String f1 = getAberto();
 		String f2 = getConcluido();
 		String f3 = getIndefinido();
@@ -60,13 +62,13 @@ public class Filtragem {
 		
 		for (String um : arquivo){
 			if (um.endsWith(f1)){
-				new BancoDados().guardaLinha(um, a, f1 + extension);
+				BancoDados.bdados.guardaLinha(um, a, f1 + extension);
 				a = true;
 			} else if (um.endsWith(f2)){
-				new BancoDados().guardaLinha(um, b, f2 + extension);
+				BancoDados.bdados.guardaLinha(um, b, f2 + extension);
 				b = true;
 			} else if (um.endsWith(f3)){
-				new BancoDados().guardaLinha(um, c, f3 + extension);
+				BancoDados.bdados.guardaLinha(um, c, f3 + extension);
 				c = true;
 			}
 		}
@@ -82,16 +84,16 @@ public class Filtragem {
 		}
 		
 		for (String dois : tem) {
-			new BancoDados().guardaLinha(dois, (tem.indexOf(dois) != 0), filtro + extension);
+			BancoDados.bdados.guardaLinha(dois, (tem.indexOf(dois) != 0), filtro + extension);
 		}
 		
 		return tem;
 	}
 	
 	public void verReqs (String caminho){
-		List<String> tudo = new BancoDados().pegaObjetoList(caminho);
+		List<String> tudo = BancoDados.bdados.pegaObjetoList(caminho);
 		filtra(caminho, getConcluido());
-		List<String> todo = new BancoDados().pegaObjetoList(getConcluido()+extension);
+		List<String> todo = BancoDados.bdados.pegaObjetoList(getConcluido()+extension);
 		String feitos = " ";
 		List<String> disc = new ArrayList<String>();
 		
@@ -125,9 +127,9 @@ public class Filtragem {
 		tudo.clear();
 		
 		for (String um : disc) {
-			new BancoDados().guardaLinha(um, !(disc.indexOf(um) == 0), "buffer.txt");
+			BancoDados.bdados.guardaLinha(um, !(disc.indexOf(um) == 0), "buffer.txt");
 		}
-		new BancoDados().copiaArquivo("buffer.txt", caminho);
+		BancoDados.bdados.copiaArquivo("buffer.txt", caminho);
 	}
 	
 	public String paraNum (int num){
@@ -183,7 +185,7 @@ public class Filtragem {
 	
 	public String[] percurso (String caminho, String disc){
 		String sep = " ";
-		String[] tudo = new BancoDados().pegaObjeto(caminho);
+		String[] tudo = BancoDados.bdados.pegaObjeto(caminho);
 		List<String> todo = new ArrayList<String>();
 		String pres = sep;
 		int dis = 0;
@@ -260,5 +262,38 @@ public class Filtragem {
 			perc.add(Integer.parseInt(dois[i]));
 			listaPre(pre, Integer.parseInt(dois[i]));
 		}
+	}
+	
+
+	/*********************************************************************/
+	public String[] objeta(String caminho) {
+		List<String> ob;
+		
+		if (!caminho.equals(BancoDados.bdados.getEnder())){
+			ob = this.filtra(BancoDados.bdados.pegaObjetoList(BancoDados.bdados.getEnder()), caminho.split(this.extension)[0]);
+		} else {
+			ob = BancoDados.bdados.pegaObjetoList(caminho);			
+		}
+		
+		if (ob.isEmpty()){
+			return null;
+		}
+		
+		String[] objetos = new String[ob.size()];
+		int i = 0;
+		for (String um : ob) {
+			String quem = um.split(sep1)[5];
+			objetos[i++] = (quem.equals(getAberto())?" +":quem.equals(getIndefinido())?"- ":"OK")
+					+ " ["
+					+ um.split(sep1)[0] 
+					+ "°sem] "
+					+ um.split(sep1)[1] 
+					+ " "
+					+ um.split(sep1)[2] 
+					+ " => {"
+					+ um.split(sep1)[3].replaceAll(sep2, ", ")
+					+ "}";
+		}
+		return objetos;
 	}
 }

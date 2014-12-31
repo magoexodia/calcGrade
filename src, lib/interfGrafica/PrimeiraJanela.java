@@ -2,7 +2,7 @@ package interfGrafica;
 
 
 @SuppressWarnings("serial")
-public class PrimeiraJanela extends BaseListadora{
+public class PrimeiraJanela extends RostoPrimeiraJanela{
 	public PrimeiraJanela(){
 		setSize(600,600);
 		setVisible(true);

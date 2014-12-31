@@ -14,6 +14,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import banco.BancoDados;
 import filtro.Filtragem;
 
 @SuppressWarnings("serial")
@@ -23,36 +24,30 @@ public class RostoEdicao extends JFrame {
 	public JButton novo, cancel, concluir, limpar;
 
 	public void seta(String linha) {
-		sem.setText(linha.split(new Filtragem().sep1)[0]);
-		cod.setText(linha.split(new Filtragem().sep1)[1]);
-		nome.setText(linha.split(new Filtragem().sep1)[2]);
-		req.setText(linha.split(new Filtragem().sep1)[3].replaceAll(
-				new Filtragem().sep2, " "));
-		hora.setText(linha.split(new Filtragem().sep1)[4]);
-
-		if (linha.split(new Filtragem().sep1)[5].equals(new Filtragem()
-				.getConcluido())) {
-			chckbxConcl.setSelected(true);
-		} else {
-			chckbxConcl.setSelected(false);
-		}
+		sem.setText(linha.split(Filtragem.filtro.sep1)[0]);
+		cod.setText(linha.split(Filtragem.filtro.sep1)[1]);
+		nome.setText(linha.split(Filtragem.filtro.sep1)[2]);
+		req.setText(linha.split(Filtragem.filtro.sep1)[3].replaceAll(
+				Filtragem.filtro.sep2, " "));
+		hora.setText(linha.split(Filtragem.filtro.sep1)[4]);
+		chckbxConcl.setSelected(linha.split(new Filtragem().sep1)[5].equals(Filtragem.filtro.getConcluido()));
 	}
 
 	public String junta() {
 		/* Apenas seta os campos */
 		String linha;
 		linha = (sem.getText().isEmpty()?"--":sem.getText())
-				+ new Filtragem().sep1
+				+ Filtragem.filtro.sep1
 				+ (cod.getText().isEmpty()?"Editar":cod.getText())
-				+ new Filtragem().sep1
+				+ Filtragem.filtro.sep1
 				+ nome.getText()
-				+ new Filtragem().sep1
+				+ Filtragem.filtro.sep1
 				+ req.getText().replaceAll(" ", new Filtragem().sep2)
-				+ new Filtragem().sep1
+				+ Filtragem.filtro.sep1
 				+ hora.getText()
-				+ new Filtragem().sep1
-				+ (chckbxConcl.isSelected() ? new Filtragem().getConcluido()
-						: new Filtragem().getIndefinido());
+				+ Filtragem.filtro.sep1
+				+ (chckbxConcl.isSelected() ? Filtragem.filtro.getConcluido()
+						: Filtragem.filtro.getIndefinido());
 		return linha.toUpperCase();
 	}
 
@@ -69,13 +64,30 @@ public class RostoEdicao extends JFrame {
 		chckbxConcl.setSelected(false);
 	}
 	
+	public boolean salva (boolean anexar){
+		if (tudoVazio()){
+			return false;
+		} else{
+			BancoDados.bdados.guardaLinha(junta(), anexar, BancoDados.bdados.getEnder());
+		}
+		return true;
+	}
+	
 	/* Os dois abaixo apenas fecham a janela. */
 	public void cancelar() {
 		//this.setVisible(false);
 		this.dispose();
 	}
 	public void concluir() {
+		Filtragem.filtro.verReqs(BancoDados.bdados.getEnder());
 		cancelar();
+	}
+	
+	public boolean tudoVazio (){
+		if (nome.getText().isEmpty() && cod.getText().isEmpty() && hora.getText().isEmpty()){
+			return true;
+		}
+		return false;
 	}
 	
 	public RostoEdicao() {

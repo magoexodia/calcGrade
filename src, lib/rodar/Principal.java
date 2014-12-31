@@ -5,11 +5,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 
 import filtro.Filtragem;
-import interfGrafica.Adicao;
-import interfGrafica.Edicao;
-import interfGrafica.FazBanco;
-import interfGrafica.ListaPercurso;
-import interfGrafica.PrimeiraJanela;
+import interfGrafica.*;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -19,6 +15,7 @@ import banco.BancoDados;
 
 @SuppressWarnings("unused")
 public class Principal {
+	
 	
 	public void criaBanco (){
 		SwingUtilities.invokeLater(new Runnable() {
@@ -68,7 +65,7 @@ public class Principal {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				ListaPercurso janela = new ListaPercurso(a, b);
+				RostoListaPercurso janela = new RostoListaPercurso(a, b);
 				janela.setVisible(true);
 				janela.setAlwaysOnTop(true);
 			}

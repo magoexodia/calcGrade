@@ -2,25 +2,16 @@ package interfGrafica;
 
 import java.awt.Dialog.ModalExclusionType;
 
-import banco.BancoDados;
-
 @SuppressWarnings("serial")
 public class Adicao extends RostoEdicao{		
 	@Override
 	public void novo() {
-		new BancoDados().guardaLinha(junta(), true, new BancoDados().getEnder());
-		limpar();
 		setVisible(false);
-		concluir();
-	}
-	
-	@Override
-	public void concluir() {
-		if (junta().contains(";;;")) {			
-		} else{
-			novo();
+		if (salva(true)){
+			concluir();
+		} else {
+			cancelar();
 		}
-		super.concluir();
 	}
 	
 	public Adicao() {

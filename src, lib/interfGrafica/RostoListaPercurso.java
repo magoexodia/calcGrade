@@ -17,7 +17,7 @@ import javax.swing.JTextPane;
 import filtro.Filtragem;
 
 @SuppressWarnings("serial")
-public class ListaPercurso extends JFrame {
+public class RostoListaPercurso extends JFrame {
 	private JTextPane txtpnNada;
 	private String t1 = new Filtragem().sep1;
 	public void setTxtpnNada(String txtpnNada) {
@@ -41,7 +41,7 @@ public class ListaPercurso extends JFrame {
 	}
 	
 	
-	public ListaPercurso(String disc, String[] lista) {
+	public RostoListaPercurso(String disc, String[] lista) {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
@@ -49,7 +49,7 @@ public class ListaPercurso extends JFrame {
 				dispose();
 			}
 		});
-		setSize(500, 500);
+		setSize(750, 500);
 		setTitle(disc.split(new Filtragem().sep1)[2]);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -69,13 +69,14 @@ public class ListaPercurso extends JFrame {
 		txtpnNada.setEditable(false);
 		txtpnNada.setText("Disciplinas que devem ser cursadas antes:\n"
 				+ "=======================================================\n"
-				+ "sem\tCodigo\tNome\n"
-				+ "===\t======\t====\n");
+				+ "Status\tsem\tCodigo\tNome\n"
+				+ "======\t===\t======\t====\n");
 		for (int i = 0; i < lista.length; i++) {
 			txtpnNada.setText(txtpnNada.getText()
+					+ (lista[i].split(t1)[5].equals(Filtragem.filtro.getConcluido())?"OK":"falta") + "\t"
 					+ lista[i].split(t1)[0] + "\t"
 					+ lista[i].split(t1)[1] + "\t"
-					+ lista[i].split(t1)[2] + "\n");			
+					+ lista[i].split(t1)[2] + "\t\n");			
 		}
 		txtpnNada.setText(txtpnNada.getText() 
 				+ "=======================================================\n");

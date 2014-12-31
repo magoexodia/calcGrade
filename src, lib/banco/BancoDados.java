@@ -17,8 +17,10 @@ import javax.swing.JOptionPane;
 
 import filtro.Filtragem;
 
+@SuppressWarnings("unused")
 public class BancoDados {
-	private String banco = "banco"+(new Filtragem().extension);
+	public static final BancoDados bdados = new BancoDados();
+	private String banco = "banco" + Filtragem.filtro.extension;
 	private FileReader lei; 
 	private BufferedWriter esc; 
 	
@@ -211,9 +213,26 @@ public class BancoDados {
 		return num;
 	}
 	
-	@SuppressWarnings("unused")
 	private void removeArq(String nome) {
 		File file = new File(nome);
 		file.delete();
+	}
+	
+	public void limpaArquivos (){
+		if (existe(Filtragem.filtro.getAberto() + Filtragem.filtro.extension)){
+			new File(Filtragem.filtro.getAberto() + Filtragem.filtro.extension).delete();
+		}
+
+		if (existe(Filtragem.filtro.getConcluido() + Filtragem.filtro.extension)){
+			new File(Filtragem.filtro.getConcluido() + Filtragem.filtro.extension).delete();
+		}
+
+		if (existe(Filtragem.filtro.getIndefinido() + Filtragem.filtro.extension)){
+			new File(Filtragem.filtro.getIndefinido() + Filtragem.filtro.extension).delete();
+		}
+
+		if (existe("buffer.txt")){
+			new File("buffer.txt").delete();	
+		}
 	}
 }

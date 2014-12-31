@@ -6,7 +6,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.List;
 
 import javax.swing.AbstractListModel;
 import javax.swing.JButton;
@@ -24,7 +23,7 @@ import banco.BancoDados;
 import filtro.Filtragem;
 
 @SuppressWarnings("serial")
-public class BaseListadora extends JFrame {
+public class RostoPrimeiraJanela extends JFrame {
 	private JSplitPane splitPane_1;
 	private JSplitPane splitPane_2;
 	private JScrollPane scrollPane;
@@ -32,10 +31,10 @@ public class BaseListadora extends JFrame {
 	private JPanel panel;
 	protected JButton btnAdd, btnRem, btnEdi, btnSem, btnAbe, btnCum, btnTra, btnPer, btnResetar, btnSair; // opções
 	protected JToggleButton tglbtnFil; // tglButton que esconde as opções de filtragem
-	//protected String[] objeto; //variavel com a lista
-	private String caminho = new BancoDados().getEnder(); // endereço do banco com a lista
+	private String caminho = BancoDados.bdados.getEnder(); // endereço do banco com a lista
 	private String filtrado = caminho; // onde vai o caminho filtrado
-	
+
+	/*********************************************************************/
 	public String getFiltrado() {
 		return filtrado;
 	}
@@ -59,37 +58,33 @@ public class BaseListadora extends JFrame {
 	/*********************************************************************/
 	private void muda (){
 		btnSem.setEnabled(!filtrado.contains(caminho));
-		btnTra.setEnabled(!filtrado.contains(new Filtragem().getIndefinido()));
-		btnAbe.setEnabled(!filtrado.contains(new Filtragem().getAberto()));
-		btnCum.setEnabled(!filtrado.contains(new Filtragem().getConcluido()));
+		btnTra.setEnabled(!filtrado.contains(Filtragem.filtro.getIndefinido()));
+		btnAbe.setEnabled(!filtrado.contains(Filtragem.filtro.getAberto()));
+		btnCum.setEnabled(!filtrado.contains(Filtragem.filtro.getConcluido()));
 	}
 	/*********************************************************************/
 	private void remover() {
-		BancoDados banco = new BancoDados();
-		
 		int indFiltrado = list.getSelectedIndex() +1;
-		String termoFiltrado = banco.pegaObjeto(filtrado, indFiltrado);
+		String termoFiltrado = BancoDados.bdados.pegaObjeto(filtrado, indFiltrado);
 		
 		
 		Remocao rem = new Remocao(termoFiltrado);
 		
-		int ace = JOptionPane.showConfirmDialog(rem, "Você tem certeza que deseja\nexcluir esta disciplina??");
+		int ace = JOptionPane.showConfirmDialog(rem, "Voce tem certeza que deseja\nexcluir esta disciplina??");
 		if (ace == JOptionPane.NO_OPTION || ace == JOptionPane.CANCEL_OPTION) {
 			rem.setVisible(false);
 		} else if (ace == JOptionPane.YES_OPTION){
-			banco.removeLinha(this.caminho, termoFiltrado);
-			JOptionPane.showMessageDialog(rem, indFiltrado + " " + termoFiltrado + "\n"
-					+ "romovido com sucesso!");
+			BancoDados.bdados.removeLinha(this.caminho, termoFiltrado);
+			JOptionPane.showMessageDialog(rem, termoFiltrado + "\n"
+					+ "removido com sucesso!");
 			rem.setVisible(false);
 			reseta();
 		}
 	}
 	/*********************************************************************/
-	private void Editar() {
-		BancoDados banco = new BancoDados();
-		
+	private void Editar() {		
 		int indFiltrado = list.getSelectedIndex() +1;
-		String termoFiltrado = banco.pegaObjeto(filtrado, indFiltrado);
+		String termoFiltrado = BancoDados.bdados.pegaObjeto(filtrado, indFiltrado);
 		
 		
 		Edicao edit = new Edicao(termoFiltrado);
@@ -97,40 +92,28 @@ public class BaseListadora extends JFrame {
 		edit.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-				new Filtragem().verReqs(caminho);
+				Filtragem.filtro.verReqs(caminho);
 				reseta();
 			}
 		});
 	}
 	/*********************************************************************/
-	private String[] objeta(String[] linha) {
-		Filtragem fil = new Filtragem();
+	private String[] objeta() {
+		String[] objetos = Filtragem.filtro.objeta(this.filtrado);
 		
-		List<String> ob = new BancoDados().pegaObjetoList(this.filtrado);
-		String[] objetos = new String[ob.size()];
-		int i = 0;
-		for (String um : ob) {
-			String quem = um.split(fil.sep1)[5];
-			objetos[i++] = (quem.equals(fil.getAberto())?" +":quem.equals(fil.getIndefinido())?"- ":"OK")
-					+ " ["
-					+ um.split(fil.sep1)[0] 
-					+ "°sem] "
-					+ um.split(fil.sep1)[1] 
-					+ " "
-					+ um.split(fil.sep1)[2] 
-					+ " => {"
-					+ um.split(fil.sep1)[3].replaceAll(fil.sep2, ", ")
-					+ "}";
+		if (objetos == null){
+			JOptionPane.showMessageDialog(null, "Lista Vazia...\nNada nesta lista.");
+			filtrado = getCaminho();
+			objetos = Filtragem.filtro.objeta(this.filtrado);
 		}
+		
 		return objetos;
 	}
 	/*********************************************************************/
 	public void reseta(){
-		//objeto = new BancoDados().pegaObjeto(this.caminho);
 		
 		list.setModel(new AbstractListModel<String>() {
-			//String[] values = new String[] {"tofu", "brusqueta", "peru"};
-			String[] values = objeta(new BancoDados().pegaObjeto(filtrado));
+			String[] values = objeta();
 			public int getSize() {
 				return values.length;
 			}
@@ -156,7 +139,7 @@ public class BaseListadora extends JFrame {
 				add.addWindowListener(new WindowAdapter() {
 					@Override
 					public void windowClosed(WindowEvent arg0) {
-						new Filtragem().verReqs(caminho);
+						Filtragem.filtro.verReqs(caminho);
 						reseta();
 					}
 				});
@@ -185,7 +168,7 @@ public class BaseListadora extends JFrame {
 		btnAbe.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				filtrado = (new Filtragem().getAberto()) + (new Filtragem().extension);
+				filtrado = (Filtragem.filtro.getAberto()) + (Filtragem.filtro.extension);
 				reseta();
 				muda();
 			}
@@ -193,7 +176,7 @@ public class BaseListadora extends JFrame {
 		btnCum.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				filtrado = (new Filtragem().getConcluido()) + (new Filtragem().extension);
+				filtrado = (Filtragem.filtro.getConcluido()) + (Filtragem.filtro.extension);
 				reseta();
 				muda();
 			}
@@ -201,7 +184,7 @@ public class BaseListadora extends JFrame {
 		btnTra.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				filtrado = (new Filtragem().getIndefinido()) + (new Filtragem().extension);
+				filtrado = (Filtragem.filtro.getIndefinido()) + (Filtragem.filtro.extension);
 				reseta();
 				muda();
 			}
@@ -222,7 +205,8 @@ public class BaseListadora extends JFrame {
 		btnSair.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				System.exit(BaseListadora.this.getDefaultCloseOperation());
+				BancoDados.bdados.limpaArquivos();
+				System.exit(RostoPrimeiraJanela.this.getDefaultCloseOperation());
 			}
 		});
 		list.addMouseListener(new MouseAdapter() {
@@ -234,18 +218,16 @@ public class BaseListadora extends JFrame {
 	}
 	/*********************************************************************/
 	private void procuraFiltro() {
-		BancoDados banco = new BancoDados();
-		Filtragem filtro = new Filtragem();
 		String disc;
 		int indFiltrado;
 		
 		indFiltrado = list.getSelectedIndex() + 1;
-		disc = banco.pegaObjeto(this.filtrado, indFiltrado);
+		disc = BancoDados.bdados.pegaObjeto(this.filtrado, indFiltrado);
 		
-		new Principal().lista(disc, filtro.percurso(caminho, disc));
+		new Principal().lista(disc, Filtragem.filtro.percurso(caminho, disc));
 	}
 	/*********************************************************************/
-	public BaseListadora (){
+	public RostoPrimeiraJanela (){
 		BorderLayout borderLayout = (BorderLayout) getContentPane().getLayout();
 		borderLayout.setVgap(5);
 		borderLayout.setHgap(10);
@@ -264,7 +246,7 @@ public class BaseListadora extends JFrame {
 		
 		splitPane_2 = new JSplitPane();
 		splitPane_2.setOneTouchExpandable(true);
-		splitPane_2.setResizeWeight(0.4);
+		splitPane_2.setResizeWeight(0.5);
 		getContentPane().add(splitPane_2, BorderLayout.CENTER);
 		
 		scrollPane = new JScrollPane();
@@ -273,7 +255,7 @@ public class BaseListadora extends JFrame {
 		list = new JList<String>();
 		list.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		list.setModel(new AbstractListModel<String>() {
-			String[] values = objeta(new BancoDados().pegaObjeto(getFiltrado()));
+			String[] values = objeta();
 			public int getSize() {
 				return values.length;
 			}

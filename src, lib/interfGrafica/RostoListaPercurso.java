@@ -26,6 +26,8 @@ import rodar.Acentos;
 import rodar.Principal;
 
 import filtro.Filtragem;
+import javax.swing.JTextPane;
+import java.awt.Color;
 
 @SuppressWarnings("serial")
 public class RostoListaPercurso extends JFrame {
@@ -84,6 +86,25 @@ public class RostoListaPercurso extends JFrame {
 		Principal.prin.lista(disc, Filtragem.filtro.percurso(BancoDados.bdados.getEnder(), disc));
 	}
 	
+	private String layOut (String um){
+		String a1 = "Aberto => ";
+		String a2 = "Falta  => ";
+		String a3 = "OK     => ";
+		
+		String quem = um.split(Filtragem.filtro.sep1)[5];
+		
+		return ((quem.equals(Filtragem.filtro.getAberto())?a1:quem.equals(Filtragem.filtro.getIndefinido())?a2:a3)
+		+ " ["
+		+ um.split(Filtragem.filtro.sep1)[0] 
+		+ Acentos.acentuar.oOrdin+"sem] "
+		+ um.split(Filtragem.filtro.sep1)[1] 
+		+ " "
+		+ um.split(Filtragem.filtro.sep1)[2] 
+		+ " => {"
+		+ um.split(Filtragem.filtro.sep1)[3].replaceAll(Filtragem.filtro.sep2, ", ")
+		+ "}");
+	}
+	
 	public RostoListaPercurso(String disc, String[] lista) {
 		this.setLista(lista); 
 		addWindowListener(new WindowAdapter() {
@@ -100,32 +121,10 @@ public class RostoListaPercurso extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
-		JLabel lblLista = new JLabel("lista");
+		JLabel lblLista = new JLabel(layOut(disc));
 		lblLista.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 		lblLista.setHorizontalAlignment(SwingConstants.CENTER);
 		scrollPane.setColumnHeaderView(lblLista);
-		
-		JSplitPane splitPane = new JSplitPane();
-		splitPane.setResizeWeight(0.9);
-		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		scrollPane.setViewportView(splitPane);
-		
-		lista2 = new JList<String>();
-		lista2.setModel(new AbstractListModel<String>() {
-			String[] values = lista();
-			public int getSize() {
-				return values.length;
-			}
-			public String getElementAt(int index) {
-				return values[index];
-			}
-		});
-		lista2.setFont(new Font("Lucida Console", Font.PLAIN, 15));
-		splitPane.setLeftComponent(lista2);
-		
-		JPanel panel = new JPanel();
-		splitPane.setRightComponent(panel);
-		panel.setLayout(null);
 		
 		JButton btnPercurso = new JButton("Percurso");
 		btnPercurso.addMouseListener(new MouseAdapter() {
@@ -135,7 +134,39 @@ public class RostoListaPercurso extends JFrame {
 			}
 		});
 		btnPercurso.setBounds(254, 11, 135, 23);
-		panel.add(btnPercurso);
+		
+		JSplitPane splitPane = new JSplitPane();
+		splitPane.setResizeWeight(0.9);
+		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		scrollPane.setViewportView(splitPane);
+		if (lista[0].equals(Filtragem.filtro.semPre)){			
+			JTextPane txtpnSpre = new JTextPane();
+			txtpnSpre.setBackground(Color.GRAY);
+			txtpnSpre.setForeground(Color.GREEN);
+			txtpnSpre.setFont(new Font("Monospaced", Font.PLAIN, 20));
+			txtpnSpre.setText("\n\n\n\t\t\tSem\n\n\t\tpre-requisitos");
+			splitPane.setLeftComponent(txtpnSpre);
+			btnPercurso.setVisible(false);
+		} else {
+			lista2 = new JList<String>();
+			lista2.setModel(new AbstractListModel<String>() {
+				String[] values = lista();
+
+				public int getSize() {
+					return values.length;
+				}
+
+				public String getElementAt(int index) {
+					return values[index];
+				}
+			});
+			lista2.setFont(new Font("Lucida Console", Font.PLAIN, 15));
+			splitPane.setLeftComponent(lista2);
+		}
+		
+		JPanel panel = new JPanel();
+		splitPane.setRightComponent(panel);
+		panel.setLayout(null);
 		
 		JButton btnSair = new JButton("Sair");
 		btnSair.setBounds(399, 11, 89, 23);
@@ -146,5 +177,6 @@ public class RostoListaPercurso extends JFrame {
 			}
 		});
 		panel.add(btnSair);
+		panel.add(btnPercurso);
 	}
 }

@@ -76,10 +76,10 @@ public class RostoEdicao extends JFrame {
 	/* Os dois abaixo apenas fecham a janela. */
 	public void cancelar() {
 		//this.setVisible(false);
+		Filtragem.filtro.verReqs(BancoDados.bdados.getEnder());
 		this.dispose();
 	}
 	public void concluir() {
-		Filtragem.filtro.verReqs(BancoDados.bdados.getEnder());
 		cancelar();
 	}
 	

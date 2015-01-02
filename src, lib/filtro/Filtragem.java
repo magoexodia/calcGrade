@@ -7,6 +7,8 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
+import rodar.Acentos;
+
 import banco.BancoDados;
 
 public class Filtragem {
@@ -17,6 +19,7 @@ public class Filtragem {
 	public final String extension = ".bancoDeListas"; 
 	public final String sep1 = ";"; 
 	public final String sep2 = "-"; 
+	public final String semPre = "--;------;Sem pre-requisitos;;--;------";
 	private Set<Integer> perc;
 	
 	public static final Filtragem filtro = new Filtragem();
@@ -40,7 +43,7 @@ public class Filtragem {
 		return nova;
 	}
 	
-	//permite filtrar pelo inicio, final ou pelo 2o pedaço e jogar num arquivo
+	//permite filtrar pelo inicio, final ou pelo 2o pedaï¿½o e jogar num arquivo
 	public void filtra(String caminho, String filtro) {
 		List<String> arquivo = BancoDados.bdados.pegaObjetoList(caminho);
 		
@@ -191,7 +194,7 @@ public class Filtragem {
 		int dis = 0;
 		
 		if (disc.split(sep1)[3].isEmpty()){
-			return (new String[] {"--;------;Sem pre-requisitos;;--;------"});
+			return (new String[] {semPre});
 		}
 		
 		for (int i = 0; i < tudo.length; i++) {
@@ -213,7 +216,7 @@ public class Filtragem {
 			}
 		}
 		
-		//O que é que eu faço com isso?
+		//O que ï¿½ que eu faï¿½o com isso?
 		perc = new HashSet<Integer>();
 		listaPre(pres, dis);
 		String[] discs = new String[perc.size()];
@@ -221,10 +224,10 @@ public class Filtragem {
 		for (Integer num : perc) {
 			if (num == -1){
 				JOptionPane.showMessageDialog(null,
-						"Algum dos pre-requisitos não consta na sua lista de disciplinas.\n"
-								+ "\nFavor adicioná-lo à lista"
+						"Algum dos pre-requisitos n"+Acentos.acentuar.aTil+"o consta na sua lista de disciplinas.\n"
+								+ "\nFavor adicion"+Acentos.acentuar.aAgudo+"-lo ï¿½ lista"
 								+ "\nou editar esta disciplina"
-								+ "\npara que este erro não ocorra mais.");
+								+ "\npara que este erro n"+Acentos.acentuar.aTil+"o ocorra mais.");
 				
 				discs[i++] = "1 ou;mais de 1;pre-requisito nao consta na sua lista;!!!;!!!;!!!";
 				continue;
@@ -286,7 +289,7 @@ public class Filtragem {
 			objetos[i++] = (quem.equals(getAberto())?" +":quem.equals(getIndefinido())?"- ":"OK")
 					+ " ["
 					+ um.split(sep1)[0] 
-					+ "°sem] "
+					+ Acentos.acentuar.oOrdin+"sem] "
 					+ um.split(sep1)[1] 
 					+ " "
 					+ um.split(sep1)[2] 

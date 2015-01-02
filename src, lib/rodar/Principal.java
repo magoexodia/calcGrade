@@ -15,7 +15,7 @@ import banco.BancoDados;
 
 @SuppressWarnings("unused")
 public class Principal {
-	
+	public final static Principal prin = new Principal();
 	
 	public void criaBanco (){
 		SwingUtilities.invokeLater(new Runnable() {
@@ -67,7 +67,6 @@ public class Principal {
 			public void run() {
 				RostoListaPercurso janela = new RostoListaPercurso(a, b);
 				janela.setVisible(true);
-				janela.setAlwaysOnTop(true);
 			}
 		});
 	}
@@ -85,13 +84,13 @@ public class Principal {
 
 			@Override
 			public boolean accept(File file) {
-				return file.getName().toLowerCase().endsWith(new Filtragem().extension)
+				return file.getName().toLowerCase().endsWith(Filtragem.filtro.extension.split(".")[1])
 				|| file.isDirectory();
 			}
 
 			@Override
 			public String getDescription() {
-				return "Planilhas " + new Filtragem().extension;
+				return Filtragem.filtro.extension;
 			}
 		});
 
@@ -112,7 +111,7 @@ public class Principal {
 		String caminho;
 		
 		if (!banco.existe(banco.getBanco()) || !banco.existe(banco.getEnder())){
-			int aceita = JOptionPane.showConfirmDialog(null, "H\u00e1 algum arquivo " + new Filtragem().extension + " com sua lista de disciplinas?");
+			int aceita = JOptionPane.showConfirmDialog(null, "H"+Acentos.acentuar.aAgudo+" algum arquivo " + Filtragem.filtro.extension + " com sua lista de disciplinas?");
 			if (aceita == JOptionPane.YES_OPTION){
 				caminho = abreCaminho();
 				if (caminho == null){
@@ -120,9 +119,9 @@ public class Principal {
 					System.exit(0);
 				}
 				banco.guardaLinha(caminho, false, banco.getBanco());
-				new Principal().roda();
+				prin.roda();
 			} else if (aceita == JOptionPane.NO_OPTION){
-				JOptionPane.showMessageDialog(null, "OK, vamos cri\u00e1-lo...");
+				JOptionPane.showMessageDialog(null, "OK, vamos cri" + Acentos.acentuar.aAgudo + "...");
 				banco.guardaLinha("saida" + (new Filtragem().extension), false, banco.getBanco());
 				new Principal().criaBanco();
 			} else if (aceita == JOptionPane.CANCEL_OPTION){
@@ -130,27 +129,12 @@ public class Principal {
 			}
 		} else {
 			caminho = banco.getEnder();
-			new Principal().roda();
+			prin.roda();
 		}
 	}
 	
-	public void filEVer (String caminho){
-		new Filtragem().verReqs(caminho);
-		new Filtragem().filtraTudo(caminho);
-	}
-	
 	public static void main(String[] args) {
-		//String copiar = "ListaDisc.txt";
-		//String destino = "buffer.txt";
-		String saida = "saida.txt";
-		//new Filtragem().testaPres(saida);
-		//new Filtragem().listaReqs(saida);
-		//new BancoDados().copiaArquivo(saida, destino);
-	//	System.out.println(" quero foder o diabo que me fez apaixonar ".trim());
-	new Principal().executa();
-		//new Principal().lista(";;free", new String[] {";;nothing"});
-		//new Filtragem().percurso(saida, new BancoDados().pegaObjeto(saida, 29));//29));
-		//System.out.println(new Filtragem().paraNum(120368));
-		
+		prin.executa();		
+		//Acentos.acentuar.mAchaLetra(513);
 	}
 }

@@ -18,6 +18,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
 
+import rodar.Acentos;
 import rodar.Principal;
 import banco.BancoDados;
 import filtro.Filtragem;
@@ -29,9 +30,9 @@ public class RostoPrimeiraJanela extends JFrame {
 	private JScrollPane scrollPane;
 	private JList<String> list; // A lista selecionavel com as disciplinas
 	private JPanel panel;
-	protected JButton btnAdd, btnRem, btnEdi, btnSem, btnAbe, btnCum, btnTra, btnPer, btnResetar, btnSair; // opções
-	protected JToggleButton tglbtnFil; // tglButton que esconde as opções de filtragem
-	private String caminho = BancoDados.bdados.getEnder(); // endereço do banco com a lista
+	protected JButton btnAdd, btnRem, btnEdi, btnSem, btnAbe, btnCum, btnTra, btnPer, btnResetar, btnSair; // opï¿½ï¿½es
+	protected JToggleButton tglbtnFil; // tglButton que esconde as opï¿½ï¿½es de filtragem
+	private String caminho = BancoDados.bdados.getEnder(); // endereï¿½o do banco com a lista
 	private String filtrado = caminho; // onde vai o caminho filtrado
 
 	/*********************************************************************/
@@ -70,7 +71,7 @@ public class RostoPrimeiraJanela extends JFrame {
 		
 		Remocao rem = new Remocao(termoFiltrado);
 		
-		int ace = JOptionPane.showConfirmDialog(rem, "Voce tem certeza que deseja\nexcluir esta disciplina??");
+		int ace = JOptionPane.showConfirmDialog(rem, "Voc"+ Acentos.acentuar.eCirc +" tem certeza que deseja\nexcluir esta disciplina??");
 		if (ace == JOptionPane.NO_OPTION || ace == JOptionPane.CANCEL_OPTION) {
 			rem.setVisible(false);
 		} else if (ace == JOptionPane.YES_OPTION){
@@ -224,7 +225,7 @@ public class RostoPrimeiraJanela extends JFrame {
 		indFiltrado = list.getSelectedIndex() + 1;
 		disc = BancoDados.bdados.pegaObjeto(this.filtrado, indFiltrado);
 		
-		new Principal().lista(disc, Filtragem.filtro.percurso(caminho, disc));
+		Principal.prin.lista(disc, Filtragem.filtro.percurso(caminho, disc));
 	}
 	/*********************************************************************/
 	public RostoPrimeiraJanela (){

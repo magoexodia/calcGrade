@@ -133,8 +133,19 @@ public class Principal {
 		}
 	}
 	
+	public void sobre (){
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				Sobre janela = new Sobre();
+				janela.setVisible(true);
+			}
+		});
+	}
+	
 	public static void main(String[] args) {
 		prin.executa();		
 		//Acentos.acentuar.mAchaLetra(513);
+		prin.sobre();
 	}
 }

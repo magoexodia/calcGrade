@@ -16,7 +16,7 @@ public class Filtragem {
 	private final String Concluido = "2conclu2".toUpperCase();
 	private final String EmCurso = "3Em cur3".toUpperCase();
 	private final String Indefinido = "0Indefi0".toUpperCase();
-	public final String extension = ".bancoDeListas"; 
+	public final String extension = ".bListas"; 
 	public final String sep1 = ";"; 
 	public final String sep2 = "-"; 
 	public final String semPre = "--;------;Sem pre-requisitos;;--;------";
@@ -286,12 +286,12 @@ public class Filtragem {
 		int i = 0;
 		for (String um : ob) {
 			String quem = um.split(sep1)[5];
-			objetos[i++] = (quem.equals(getAberto())?" +":quem.equals(getIndefinido())?"- ":"OK")
-					+ " ["
+			objetos[i++] = (quem.equals(getAberto())?" +":quem.equals(getConcluido())?"OK":"- ")
+					+ " ("
 					+ um.split(sep1)[0] 
-					+ Acentos.acentuar.oOrdin+"sem] "
+					+ Acentos.acentuar.oOrdin+"sem) ["
 					+ um.split(sep1)[1] 
-					+ " "
+					+ "] "
 					+ um.split(sep1)[2] 
 					+ " => {"
 					+ um.split(sep1)[3].replaceAll(sep2, ", ")

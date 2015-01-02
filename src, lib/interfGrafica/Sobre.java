@@ -49,12 +49,12 @@ public class Sobre extends JFrame {
 		JTextPane sobre = new JTextPane();
 		sobre.setFont(new Font("DejaVu Sans Mono", Font.PLAIN, 15));
 		sobre.setText("Sobre o autor: \n" +
-				"\tMarinaldo, estudante de Engenharia da computação pela UFBA.\n\n" +
-				"Sobre este projeto:\n\nEste " +
+				"\tMarinaldo, estudante de Engenharia da computa"+Acentos.acentuar.cedilMin+Acentos.acentuar.aTil+"o pela UFBA.\n\n" +
+				"Sobre este projeto:\n\n\tEste " +
 				Acentos.acentuar.eAgudo+" um programa para ajudar os estudantes universit" +
 						Acentos.acentuar.aAgudo+"rios a organizar\n" +
-						"suas grade curriculares do pr"+Acentos.acentuar.oAgudo+"ximo semestre ou per"
-				+Acentos.acentuar.iAgudo+"odo letivo.\n\n\n");
+						"suas grades curriculares do(s) pr"+Acentos.acentuar.oAgudo+"ximo(s) semestre(s) ou per"
+				+Acentos.acentuar.iAgudo+"odo(s) letivo(s).\n\n\n");
 		scrollPane.setViewportView(sobre);
 	}
 }

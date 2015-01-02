@@ -48,7 +48,8 @@ public class Principal {
 		});
 	}
 	
-	public void roda (){
+	public void roda (String caminho){
+		Filtragem.filtro.verReqs(caminho);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -84,7 +85,7 @@ public class Principal {
 
 			@Override
 			public boolean accept(File file) {
-				return file.getName().toLowerCase().endsWith(Filtragem.filtro.extension.split(".")[1])
+				return file.getName().toLowerCase().endsWith(Filtragem.filtro.extension.toLowerCase())
 				|| file.isDirectory();
 			}
 
@@ -119,7 +120,7 @@ public class Principal {
 					System.exit(0);
 				}
 				banco.guardaLinha(caminho, false, banco.getBanco());
-				prin.roda();
+				prin.roda(caminho);
 			} else if (aceita == JOptionPane.NO_OPTION){
 				JOptionPane.showMessageDialog(null, "OK, vamos cri" + Acentos.acentuar.aAgudo + "...");
 				banco.guardaLinha("saida" + (new Filtragem().extension), false, banco.getBanco());
@@ -129,7 +130,7 @@ public class Principal {
 			}
 		} else {
 			caminho = banco.getEnder();
-			prin.roda();
+			prin.roda(caminho);
 		}
 	}
 	

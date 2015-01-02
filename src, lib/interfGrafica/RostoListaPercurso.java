@@ -28,11 +28,14 @@ import rodar.Principal;
 import filtro.Filtragem;
 import javax.swing.JTextPane;
 import java.awt.Color;
+import java.awt.Component;
+import javax.swing.Box;
 
 @SuppressWarnings("serial")
 public class RostoListaPercurso extends JFrame {
 	private JList<String> lista2;
-	
+	private String a1 = "Aberto\t=> ", a2 = "\t=> ", a3 = "OK\t=> ";
+		
 	private String[] lista;
 	
 	public String[] getLista() {
@@ -65,9 +68,9 @@ public class RostoListaPercurso extends JFrame {
 			if(objetos[i].contains(Filtragem.filtro.semPre)){
 				lista[i] = "Sem pre-requisitos";
 			} else if (objetos[i].contains(Filtragem.filtro.sep1)){
-			lista[i] = (objetos[i].split(Filtragem.filtro.sep1)[5].equals(Filtragem.filtro.getConcluido())?"OK":"falta") + " => "
-					+ objetos[i].split(Filtragem.filtro.sep1)[0] + Acentos.acentuar.oOrdin + "sem "
-					+ objetos[i].split(Filtragem.filtro.sep1)[1] + ": "
+			lista[i] = (objetos[i].split(Filtragem.filtro.sep1)[5].equals(Filtragem.filtro.getConcluido())?"__OK_ =>":"falta <=") + " ("
+					+ objetos[i].split(Filtragem.filtro.sep1)[0] + Acentos.acentuar.oOrdin + "sem) ["
+					+ objetos[i].split(Filtragem.filtro.sep1)[1] + "]: "
 					+ objetos[i].split(Filtragem.filtro.sep1)[2];	
 			} else {
 				lista[i] = objetos[i];
@@ -87,18 +90,14 @@ public class RostoListaPercurso extends JFrame {
 	}
 	
 	private String layOut (String um){
-		String a1 = "Aberto => ";
-		String a2 = "Falta  => ";
-		String a3 = "OK     => ";
-		
 		String quem = um.split(Filtragem.filtro.sep1)[5];
 		
-		return ((quem.equals(Filtragem.filtro.getAberto())?a1:quem.equals(Filtragem.filtro.getIndefinido())?a2:a3)
-		+ " ["
+		return ((quem.equals(Filtragem.filtro.getAberto())?a1:quem.equals(Filtragem.filtro.getConcluido())?a3:a2)
+		+ " ("
 		+ um.split(Filtragem.filtro.sep1)[0] 
-		+ Acentos.acentuar.oOrdin+"sem] "
+		+ Acentos.acentuar.oOrdin+"sem) ["
 		+ um.split(Filtragem.filtro.sep1)[1] 
-		+ " "
+		+ "] "
 		+ um.split(Filtragem.filtro.sep1)[2] 
 		+ " => {"
 		+ um.split(Filtragem.filtro.sep1)[3].replaceAll(Filtragem.filtro.sep2, ", ")
@@ -122,8 +121,8 @@ public class RostoListaPercurso extends JFrame {
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
 		JLabel lblLista = new JLabel(layOut(disc));
-		lblLista.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-		lblLista.setHorizontalAlignment(SwingConstants.CENTER);
+		lblLista.setFont(new Font("Lucida Console", Font.PLAIN, 15));
+		lblLista.setHorizontalAlignment(SwingConstants.LEFT);
 		scrollPane.setColumnHeaderView(lblLista);
 		
 		JButton btnPercurso = new JButton("Percurso");
@@ -136,7 +135,7 @@ public class RostoListaPercurso extends JFrame {
 		btnPercurso.setBounds(254, 11, 135, 23);
 		
 		JSplitPane splitPane = new JSplitPane();
-		splitPane.setResizeWeight(0.9);
+		splitPane.setResizeWeight(0.85);
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		scrollPane.setViewportView(splitPane);
 		if (lista[0].equals(Filtragem.filtro.semPre)){			
@@ -178,5 +177,9 @@ public class RostoListaPercurso extends JFrame {
 		});
 		panel.add(btnSair);
 		panel.add(btnPercurso);
+		
+		Component verticalStrut = Box.createVerticalStrut(20);
+		verticalStrut.setBounds(140, 0, 41, 43);
+		panel.add(verticalStrut);
 	}
 }

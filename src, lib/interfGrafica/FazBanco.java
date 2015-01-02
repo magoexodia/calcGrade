@@ -2,6 +2,7 @@ package interfGrafica;
 
 import javax.swing.JOptionPane;
 
+import banco.BancoDados;
 import rodar.Principal;
 
 @SuppressWarnings("serial")
@@ -33,7 +34,7 @@ public class FazBanco extends RostoEdicao{
 		if (!tudoVazio()){
 			novo();
 		}
-		new Principal().roda();
+		Principal.prin.roda(BancoDados.bdados.getEnder());
 		super.concluir();
 	}
 	

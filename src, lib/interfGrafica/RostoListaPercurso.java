@@ -21,15 +21,18 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 
 import banco.BancoDados;
-
 import rodar.Acentos;
 import rodar.Principal;
-
 import filtro.Filtragem;
+
 import javax.swing.JTextPane;
+
 import java.awt.Color;
 import java.awt.Component;
+
 import javax.swing.Box;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 @SuppressWarnings("serial")
 public class RostoListaPercurso extends JFrame {
@@ -135,7 +138,7 @@ public class RostoListaPercurso extends JFrame {
 		btnPercurso.setBounds(254, 11, 135, 23);
 		
 		JSplitPane splitPane = new JSplitPane();
-		splitPane.setResizeWeight(0.85);
+		splitPane.setResizeWeight(0.75);
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		scrollPane.setViewportView(splitPane);
 		if (lista[0].equals(Filtragem.filtro.semPre)){			
@@ -144,6 +147,15 @@ public class RostoListaPercurso extends JFrame {
 			txtpnSpre.setForeground(Color.GREEN);
 			txtpnSpre.setFont(new Font("Monospaced", Font.PLAIN, 20));
 			txtpnSpre.setText("\n\n\n\t\t\tSem\n\n\t\tpre-requisitos");
+			txtpnSpre.setEditable(false);
+			txtpnSpre.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent key) {
+					if (key.getKeyCode() == 27 || key.getKeyCode() == 10){
+						dispose();
+					}
+				}
+			});
 			splitPane.setLeftComponent(txtpnSpre);
 			btnPercurso.setVisible(false);
 		} else {
@@ -160,6 +172,20 @@ public class RostoListaPercurso extends JFrame {
 				}
 			});
 			lista2.setFont(new Font("Lucida Console", Font.PLAIN, 15));
+			lista2.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseReleased(MouseEvent arg0) {
+					percorre();
+				}
+			});
+			lista2.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent key) {
+					if (key.getKeyCode() == 27){
+						dispose();
+					}
+				}
+			});
 			splitPane.setLeftComponent(lista2);
 		}
 		

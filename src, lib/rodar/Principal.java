@@ -148,5 +148,6 @@ public class Principal {
 		prin.executa();		
 		//Acentos.acentuar.mAchaLetra(513);
 		prin.sobre();
+		//prin.roda(BancoDados.bdados.getEnder());
 	}
 }

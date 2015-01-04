@@ -6,10 +6,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 import javax.swing.AbstractListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -123,6 +125,16 @@ public class RostoPrimeiraJanela extends JFrame {
 			}
 		});
 		habilita(false);
+	}
+	/*********************************************************************/
+	public void busca (String digit){
+		List<String> obj = BancoDados.bdados.pegaObjetoList(this.filtrado);
+		
+		for (String um : obj) {
+			if (um.contains(digit)){
+				list.setSelectedIndex(obj.indexOf(um));
+			}
+		}
 	}
 	/*********************************************************************/
 	public void doMouse() {
@@ -267,6 +279,10 @@ public class RostoPrimeiraJanela extends JFrame {
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(list);
 		
+		JLabel label = new JLabel("     sem     codigo     nome da disciplina => pre-requisitos".toUpperCase());
+		label.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		scrollPane.setColumnHeaderView(label);
+		
 		panel = new JPanel();
 		splitPane_2.setLeftComponent(panel);
 		panel.setLayout(null);
@@ -306,6 +322,18 @@ public class RostoPrimeiraJanela extends JFrame {
 		btnPer = new JButton("Per");
 		btnPer.setBounds(20, 135, 161, 32);
 		panel.add(btnPer);
+		
+		JButton btnBusca = new JButton("busca".toUpperCase());
+		btnBusca.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				RostoBusca jan = new RostoBusca();
+				jan.setVisible(true);
+				jan.setLocationRelativeTo(getContentPane());
+			}
+		});
+		btnBusca.setBounds(20, 398, 89, 23);
+		panel.add(btnBusca);
 		
 		doMouse();
 		habilita(false);

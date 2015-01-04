@@ -55,6 +55,15 @@ public class Filtragem {
 			}
 		}
 	}	
+	public String[] filtra(String filtro, String[] tudo) {
+		List<String> objetos = new ArrayList<String>();
+		for (int i = 0; i < tudo.length; i++) {
+			if (tudo[i].contains(filtro)){
+				objetos.add(tudo[i]);
+			}
+		}
+		return ListToArray(objetos);
+	}	
 
 	public void filtraTudo(String caminho) {
 		List<String> arquivo = BancoDados.bdados.pegaObjetoList(caminho);
@@ -225,7 +234,7 @@ public class Filtragem {
 			if (num == -1){
 				JOptionPane.showMessageDialog(null,
 						"Algum dos pre-requisitos n"+Acentos.acentuar.aTil+"o consta na sua lista de disciplinas.\n"
-								+ "\nFavor adicion"+Acentos.acentuar.aAgudo+"-lo � lista"
+								+ "\nFavor adicion"+Acentos.acentuar.aAgudo+"-lo "+Acentos.acentuar.aCrase+" lista"
 								+ "\nou editar esta disciplina"
 								+ "\npara que este erro n"+Acentos.acentuar.aTil+"o ocorra mais.");
 				
@@ -295,6 +304,31 @@ public class Filtragem {
 					+ um.split(sep1)[2] 
 					+ " => {"
 					+ um.split(sep1)[3].replaceAll(sep2, ", ")
+					+ "}";
+		}
+		return objetos;
+	}
+	
+	public String[] ListToArray (List<String> ob){
+		String[] objetos = new String[ob.size()];
+		for (String um : ob) {
+			objetos[ob.indexOf(um)] = um;
+		}
+		return objetos;
+	}
+	
+	public String[] objeta(String[] objetos) {
+		for (int j = 0; j < objetos.length; j++) {
+			String quem = objetos[j].split(sep1)[5];
+			objetos[j] = (quem.equals(getAberto())?" +":quem.equals(getConcluido())?"OK":"- ")
+					+ " ("
+					+ objetos[j].split(sep1)[0] 
+					+ Acentos.acentuar.oOrdin+"sem) ["
+					+ objetos[j].split(sep1)[1] 
+					+ "] "
+					+ objetos[j].split(sep1)[2] 
+					+ " => {"
+					+ objetos[j].split(sep1)[3].replaceAll(sep2, ", ")
 					+ "}";
 		}
 		return objetos;

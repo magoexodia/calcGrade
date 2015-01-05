@@ -109,6 +109,6 @@ public class RostoBusca extends JFrame {
 				return values[index];
 			}
 		});
-		list.setBackground(new Color(102, 255, 51));
+		list.setBackground(new Color(125, 255, 123));
 	}
 }

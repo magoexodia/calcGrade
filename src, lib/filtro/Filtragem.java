@@ -105,22 +105,22 @@ public class Filtragem {
 	public void verReqs (String caminho){
 		List<String> tudo = BancoDados.bdados.pegaObjetoList(caminho);
 		filtra(caminho, getConcluido());
-		List<String> todo = BancoDados.bdados.pegaObjetoList(getConcluido()+extension);
+		List<String> todo = BancoDados.bdados.pegaObjetoList(getConcluido() + this.extension);
 		String feitos = " ";
 		List<String> disc = new ArrayList<String>();
 		
 		for (String um : todo) {
-			feitos = feitos + um.split(sep1)[1] + " ";
-		}
-		
+			feitos = feitos + um.split(this.sep1)[1] + " ";
+		}		
 		todo.clear();
+		
 		for (String um : tudo) {
-			if (um.endsWith(getConcluido())){
-				disc.add(um.replace(um.split(sep1)[5], getConcluido()));
-			} else if (um.split(sep1)[3].isEmpty()){
-				disc.add(um.replace(um.split(sep1)[5], getAberto()));
-			} else if (!um.split(sep1)[3].isEmpty()){
-				String[] dois = um.split(sep1)[3].split(sep2);
+			if (um.endsWith(this.getConcluido())){
+				disc.add(um.replace(um.split(this.sep1)[5], this.getConcluido()));
+			} else if (um.split(this.sep1)[3].isEmpty()){
+				disc.add(um.replace(um.split(this.sep1)[5], this.getAberto()));
+			} else if (!um.split(this.sep1)[3].isEmpty()){
+				String[] dois = um.split(this.sep1)[3].split(this.sep2);
 				int pre = dois.length;
 				for (int i = 0; i < pre; i++) {
 					if (!feitos.contains(dois[i])) {
@@ -129,9 +129,9 @@ public class Filtragem {
 					}
 				}
 				if (pre == -1) {
-					disc.add(um.replace(um.split(sep1)[5], getIndefinido()));
+					disc.add(um.replace(um.split(this.sep1)[5], this.getIndefinido()));
 				} else {
-					disc.add(um.replace(um.split(sep1)[5], getAberto()));
+					disc.add(um.replace(um.split(this.sep1)[5], this.getAberto()));
 				}
 			}
 		}

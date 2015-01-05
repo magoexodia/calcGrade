@@ -186,6 +186,7 @@ public class RostoListaPercurso extends JFrame {
 					}
 				}
 			});
+			lista2.setBackground(new Color(125, 255, 123));
 			splitPane.setLeftComponent(lista2);
 		}
 		

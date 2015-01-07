@@ -49,7 +49,7 @@ public class Filtragem {
 		
 		boolean anexar = false;
 		for (String um : arquivo){
-			if (um.endsWith(filtro) || um.startsWith(filtro) || um.split(";")[1].startsWith(filtro)){
+			if (um.endsWith(filtro) || um.startsWith(filtro) || um.split(sep1)[1].startsWith(filtro)){
 				new BancoDados().guardaLinha(um, anexar, filtro + extension);
 				anexar = true;
 			}
@@ -104,15 +104,20 @@ public class Filtragem {
 	
 	public void verReqs (String caminho){
 		List<String> tudo = BancoDados.bdados.pegaObjetoList(caminho);
+		if (tudo == null){
+			return;
+		}
 		filtra(caminho, getConcluido());
 		List<String> todo = BancoDados.bdados.pegaObjetoList(getConcluido() + this.extension);
 		String feitos = " ";
 		List<String> disc = new ArrayList<String>();
 		
-		for (String um : todo) {
-			feitos = feitos + um.split(this.sep1)[1] + " ";
-		}		
-		todo.clear();
+		if (todo != null) {
+			for (String um : todo) {
+				feitos = feitos + um.split(this.sep1)[1] + " ";
+			}
+			todo.clear();
+		}
 		
 		for (String um : tudo) {
 			if (um.endsWith(this.getConcluido())){
@@ -198,6 +203,9 @@ public class Filtragem {
 	public String[] percurso (String caminho, String disc){
 		String sep = " ";
 		String[] tudo = BancoDados.bdados.pegaObjeto(caminho);
+		if (tudo == null){
+			return null;
+		}
 		List<String> todo = new ArrayList<String>();
 		String pres = sep;
 		int dis = 0;
@@ -280,6 +288,8 @@ public class Filtragem {
 	/*********************************************************************/
 	public String[] objeta(String caminho) {
 		List<String> ob;
+		
+		BancoDados.bdados.limpaDuplos(caminho);
 		
 		if (!caminho.equals(BancoDados.bdados.getEnder())){
 			ob = this.filtra(BancoDados.bdados.pegaObjetoList(BancoDados.bdados.getEnder()), caminho.split(this.extension)[0]);

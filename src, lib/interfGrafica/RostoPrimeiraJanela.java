@@ -73,15 +73,21 @@ public class RostoPrimeiraJanela extends JFrame {
 		
 		Remocao rem = new Remocao(termoFiltrado);
 		
-		int ace = JOptionPane.showConfirmDialog(rem, "Voc"+ Acentos.acentuar.eCirc +" tem certeza que deseja\nexcluir esta disciplina??");
+		int ace = JOptionPane.showConfirmDialog(rem, "Voc"
+				+ Acentos.acentuar.eCirc
+				+ " tem certeza que deseja\nexcluir esta disciplina??");
 		if (ace == JOptionPane.NO_OPTION || ace == JOptionPane.CANCEL_OPTION) {
 			rem.setVisible(false);
-		} else if (ace == JOptionPane.YES_OPTION){
-			BancoDados.bdados.removeLinha(this.caminho, termoFiltrado);
-			JOptionPane.showMessageDialog(rem, termoFiltrado + "\n"
-					+ "removido com sucesso!");
-			rem.setVisible(false);
-			reseta();
+		} else if (ace == JOptionPane.YES_OPTION) {
+			if (BancoDados.bdados.removeLinha(this.caminho, termoFiltrado)) {
+				JOptionPane.showMessageDialog(rem, termoFiltrado + "\n"
+						+ "removido com sucesso!");
+				rem.dispose();
+				reseta();
+			} else {
+				JOptionPane.showMessageDialog(rem, "Não removido.");
+				rem.dispose();
+			}
 		}
 	}
 	/*********************************************************************/
@@ -108,6 +114,9 @@ public class RostoPrimeiraJanela extends JFrame {
 			JOptionPane.showMessageDialog(null, "Lista Vazia...\nNada nesta lista.");
 			filtrado = getCaminho();
 			objetos = Filtragem.filtro.objeta(this.filtrado);
+			if (objetos == null){
+				return new String[] {"arquivo vazio"};
+			}
 		}
 		
 		return objetos;
@@ -269,9 +278,11 @@ public class RostoPrimeiraJanela extends JFrame {
 		list.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		list.setModel(new AbstractListModel<String>() {
 			String[] values = objeta();
+
 			public int getSize() {
 				return values.length;
 			}
+
 			public String getElementAt(int index) {
 				return values[index];
 			}

@@ -55,6 +55,7 @@ public class Sobre extends JFrame {
 						Acentos.acentuar.aAgudo+"rios a organizar\n" +
 						"suas grades curriculares do(s) pr"+Acentos.acentuar.oAgudo+"ximo(s) semestre(s) ou per"
 				+Acentos.acentuar.iAgudo+"odo(s) letivo(s).\n\n\n");
+		sobre.setEditable(false);
 		scrollPane.setViewportView(sobre);
 	}
 }

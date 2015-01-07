@@ -14,7 +14,7 @@ public class Edicao extends RostoEdicao {
 		String mudado = this.junta();
 		int linha = BancoDados.bdados.achaLinha(caminho, mudar) -1;
 		
-		if (mudado.equals(mudar) || tudoVazio()){
+		if (mudado.equals(mudar) || invalido()){
 			cancelar();
 		} else {
 			BancoDados.bdados.mudaLinha(BancoDados.bdados.getEnder(), linha,

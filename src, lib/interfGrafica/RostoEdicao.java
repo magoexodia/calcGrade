@@ -19,7 +19,7 @@ import filtro.Filtragem;
 
 @SuppressWarnings("serial")
 public class RostoEdicao extends JFrame {
-	private JTextField cod, nome, req, hora, sem;
+	protected JTextField cod, nome, req, hora, sem;
 	private JCheckBox chckbxConcl;
 	public JButton novo, cancel, concluir, limpar;
 
@@ -65,7 +65,7 @@ public class RostoEdicao extends JFrame {
 	}
 	
 	public boolean salva (boolean anexar){
-		if (tudoVazio()){
+		if (invalido()){
 			return false;
 		} else{
 			BancoDados.bdados.guardaLinha(junta(), anexar, BancoDados.bdados.getEnder());
@@ -76,15 +76,15 @@ public class RostoEdicao extends JFrame {
 	/* Os dois abaixo apenas fecham a janela. */
 	public void cancelar() {
 		//this.setVisible(false);
-		Filtragem.filtro.verReqs(BancoDados.bdados.getEnder());
 		this.dispose();
 	}
 	public void concluir() {
+		Filtragem.filtro.verReqs(BancoDados.bdados.getEnder());
 		cancelar();
 	}
 	
-	public boolean tudoVazio (){
-		if (nome.getText().isEmpty() && cod.getText().isEmpty() && hora.getText().isEmpty()){
+	public boolean invalido (){
+		if (nome.getText().isEmpty() && cod.getText().isEmpty()){
 			return true;
 		}
 		return false;

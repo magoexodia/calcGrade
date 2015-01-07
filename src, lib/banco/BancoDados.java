@@ -20,9 +20,14 @@ import filtro.Filtragem;
 @SuppressWarnings("unused")
 public class BancoDados {
 	public static final BancoDados bdados = new BancoDados();
-	private String banco = "banco" + Filtragem.filtro.extension;
+	private String banco = "config" + Filtragem.filtro.extension;
 	private FileReader lei; 
-	private BufferedWriter esc; 
+	private BufferedWriter esc;
+	private String endereco = "banco" + Filtragem.filtro.extension;
+	
+	public String getEndereco() {
+		return endereco;
+	}
 	
 	public String getBanco () {
 		return this.banco;
@@ -62,6 +67,11 @@ public class BancoDados {
 	//retorna um array de strings
 	public String[] pegaObjeto(String caminho) {
 		List<String> linha = pegaObjetoList(caminho);
+		
+		if (linha == null){
+			return null;
+		}
+		
 		String[] pega = new String [linha.size()];
 		
 		for (String ob: linha){
@@ -75,12 +85,15 @@ public class BancoDados {
 
 	//Pega uma linha específica
 	public String pegaObjeto(String caminho, int pular) {
-		String pega = pegaObjeto(caminho)[pular -1];
-		return pega;
+		String[] pega = pegaObjeto(caminho);
+		if (pega == null){
+			return null;
+		}
+		return pega[pular -1];
 	}
 	
 	public boolean existe (String caminho) {
-		if (caminho.isEmpty() || caminho.equals(null)){
+		if (caminho.equals(null)){
 			return false;
 		}
 		
@@ -98,7 +111,7 @@ public class BancoDados {
 	}
 	
 /**
- * Momento guardar linhas de objetos
+ * Guardar linhas de objetos
  * */
 	
 	public void guardaLinha (String linha, boolean anexar, String caminho){
@@ -155,15 +168,24 @@ public class BancoDados {
 		}
 	}
 	
-	public void removeLinha (String destino, String remover) {
+	public boolean removeLinha (String destino, String remover) {
 		String[] pega = pegaObjeto(destino);
-		
+
+		if (pega.length == 1) {
+			JOptionPane.showMessageDialog(null,
+					"Se quiser refazer esta lista do zero apenas apague um dos arquivos:\n"
+							+ BancoDados.bdados.getEnder() + "\nou "
+							+ BancoDados.bdados.getBanco());
+			return false;
+		}
+
 		for (int i = 0; i < pega.length; i++){
 			if (pega[i].equals(remover)){
 				continue;
 			}
 			guardaLinha(pega[i], i > 0, destino);
 		}
+		return true;
 	}
 	
 	public void organizaArquivo (String destino) {
@@ -186,6 +208,9 @@ public class BancoDados {
 		List<String> tudo = pegaObjetoList(caminho);
 		Set<String> todo = new HashSet<String>();
 		
+		if (tudo == null){
+			return;
+		}
 		for (String um : tudo){
 			todo.add(um);
 		}
@@ -234,5 +259,12 @@ public class BancoDados {
 		if (existe("buffer.txt")){
 			new File("buffer.txt").delete();	
 		}
+	}
+	
+	public boolean ArqVazio(String caminho) {
+		if (new File (caminho).length() < 5){
+			return true;
+		}
+		return false;
 	}
 }

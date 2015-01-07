@@ -13,7 +13,6 @@ import javax.swing.SwingUtilities;
 
 import banco.BancoDados;
 
-@SuppressWarnings("unused")
 public class Principal {
 	public final static Principal prin = new Principal();
 	
@@ -22,6 +21,12 @@ public class Principal {
 			@Override
 			public void run() {
 				FazBanco janela = new FazBanco();
+				janela.addWindowListener(new WindowAdapter() {
+					@Override
+					public void windowClosed(WindowEvent arg0) {
+						prin.roda(BancoDados.bdados.getEnder());
+					}
+				});
 				janela.setVisible(true);
 			}
 		});
@@ -49,7 +54,10 @@ public class Principal {
 	}
 	
 	public void roda (String caminho){
-		Filtragem.filtro.verReqs(caminho);
+		if (new File (caminho).length() > 2 && BancoDados.bdados.existe(caminho)){
+			Filtragem.filtro.verReqs(caminho);
+		}
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -108,29 +116,52 @@ public class Principal {
 	}
 	
 	public void executa() {
-		BancoDados banco = new BancoDados();
-		String caminho;
 		
-		if (!banco.existe(banco.getBanco()) || !banco.existe(banco.getEnder())){
-			int aceita = JOptionPane.showConfirmDialog(null, "H"+Acentos.acentuar.aAgudo+" algum arquivo " + Filtragem.filtro.extension + " com sua lista de disciplinas?");
-			if (aceita == JOptionPane.YES_OPTION){
-				caminho = abreCaminho();
-				if (caminho == null){
-					JOptionPane.showMessageDialog(null, "Fechando o programa...");
+		/*
+		 * Se Existe arquivo de configuração de endereço 
+		 * Se contem uma linha não nula 
+		 * E se o endereço existe Então roda() o programa principal.
+		 */
+		if (BancoDados.bdados.existe(BancoDados.bdados.getBanco())
+				&& !BancoDados.bdados.getEnder().equals(null)
+				&& BancoDados.bdados.existe(BancoDados.bdados.getEnder())) {
+			prin.roda(BancoDados.bdados.getEnder());
+		} else {
+			// No outro caso, ou seja, positivo pra qualquer um dos problemas
+			// acima
+			int aceita = JOptionPane.showConfirmDialog(null, "H"
+					+ Acentos.acentuar.aAgudo + " algum arquivo "
+					+ Filtragem.filtro.extension
+					+ " com sua lista de disciplinas?");
+
+			switch (aceita) {
+			case JOptionPane.YES_OPTION:
+				// abre o pesquisador de arquivos e salva o caminho
+				String caminho = abreCaminho();
+				if (caminho == null) {
+					JOptionPane.showMessageDialog(null,
+							"Fechando o programa...");
 					System.exit(0);
 				}
-				banco.guardaLinha(caminho, false, banco.getBanco());
+				BancoDados.bdados.guardaLinha(caminho, false,
+						BancoDados.bdados.getBanco());
 				prin.roda(caminho);
-			} else if (aceita == JOptionPane.NO_OPTION){
-				JOptionPane.showMessageDialog(null, "OK, vamos cri" + Acentos.acentuar.aAgudo + "...");
-				banco.guardaLinha("saida" + (new Filtragem().extension), false, banco.getBanco());
-				new Principal().criaBanco();
-			} else if (aceita == JOptionPane.CANCEL_OPTION){
+				break;
+
+			case JOptionPane.NO_OPTION:
+				// Abre o criador de bancos e salva num caminho padrão
+				JOptionPane.showMessageDialog(null, "OK, vamos cri"
+						+ Acentos.acentuar.aAgudo + "...");
+				BancoDados.bdados.guardaLinha(BancoDados.bdados.getEndereco(),
+						false, BancoDados.bdados.getBanco());
+				prin.criaBanco();
+				break;
+
+			default:
+				//fecha o programa
 				System.exit(0);
+				break;
 			}
-		} else {
-			caminho = banco.getEnder();
-			prin.roda(caminho);
 		}
 	}
 	
@@ -147,7 +178,7 @@ public class Principal {
 	public static void main(String[] args) {
 		prin.executa();		
 		//Acentos.acentuar.mAchaLetra(513);
-		prin.sobre();
+		//prin.sobre();
 		//prin.roda(BancoDados.bdados.getEnder());
 	}
 }

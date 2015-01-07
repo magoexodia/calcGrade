@@ -178,7 +178,7 @@ public class Principal {
 	public static void main(String[] args) {
 		prin.executa();		
 		//Acentos.acentuar.mAchaLetra(513);
-		//prin.sobre();
+		prin.sobre();
 		//prin.roda(BancoDados.bdados.getEnder());
 	}
 }

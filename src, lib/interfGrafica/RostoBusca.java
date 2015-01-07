@@ -51,6 +51,7 @@ public class RostoBusca extends JFrame {
 	}
 	
 	public RostoBusca() {
+		setLocationRelativeTo(null);
 		setVisible(true);
 		setSize(500,500);
 		setTitle("Sistema de busca de disciplina individual");

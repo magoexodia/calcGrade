@@ -15,9 +15,9 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
+import rodar.Principal;
 import filtro.Filtragem;
 
-@SuppressWarnings("unused")
 public class BancoDados {
 	public static final BancoDados bdados = new BancoDados();
 	private String banco = "config" + Filtragem.filtro.extension;
@@ -168,24 +168,31 @@ public class BancoDados {
 		}
 	}
 	
-	public boolean removeLinha (String destino, String remover) {
-		String[] pega = pegaObjeto(destino);
+	public int removeLinha (String destino, String remover) {
+		List<String> pega = pegaObjetoList(destino);
 
-		if (pega.length == 1) {
-			JOptionPane.showMessageDialog(null,
-					"Se quiser refazer esta lista do zero apenas apague um dos arquivos:\n"
-							+ BancoDados.bdados.getEnder() + "\nou "
-							+ BancoDados.bdados.getBanco());
-			return false;
-		}
-
-		for (int i = 0; i < pega.length; i++){
-			if (pega[i].equals(remover)){
-				continue;
+		int i = 0;
+		for (String um : pega) {
+			if (!um.contains(remover)){
+				guardaLinha(um, i > 0, destino);
+				i++;
+			} if (pega.size() == 1){
+				removeArq(destino);
+				if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, "Lista de disciplinas completamente vazia"
+						+ "\n\nClique em sim para refaze-la"
+						+ "\nOu nao para fechar o programa.")){
+					Principal.prin.criaBanco();
+					return -1;
+				} else {
+					System.exit(0);
+				}
 			}
-			guardaLinha(pega[i], i > 0, destino);
 		}
-		return true;
+		
+		if (new File (destino).exists()){
+			organizaArquivo(destino);			
+		}
+		return 1;
 	}
 	
 	public void organizaArquivo (String destino) {
@@ -229,7 +236,7 @@ public class BancoDados {
 		List<String> arq = pegaObjetoList(caminho);
 		
 		for (String lin : arq) {
-			if (lin.equals(linha)){
+			if (lin.contains(linha)){
 				num = arq.indexOf(lin);
 				return num + 1;
 			}

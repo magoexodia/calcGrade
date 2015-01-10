@@ -24,6 +24,7 @@ import rodar.Acentos;
 import rodar.Principal;
 import banco.BancoDados;
 import filtro.Filtragem;
+import javax.swing.JCheckBox;
 
 @SuppressWarnings("serial")
 public class RostoPrimeiraJanela extends JFrame {
@@ -36,12 +37,14 @@ public class RostoPrimeiraJanela extends JFrame {
 	protected JToggleButton tglbtnFil; // tglButton que esconde as opï¿½ï¿½es de filtragem
 	private String caminho = BancoDados.bdados.getEnder(); // endereï¿½o do banco com a lista
 	private String filtrado = caminho; // onde vai o caminho filtrado
+	private JCheckBox chckbxOpt;
+	public int tf = 3;
+	private JCheckBox chckbxOb;
 
 	/*********************************************************************/
 	public String getFiltrado() {
 		return filtrado;
 	}
-	/*********************************************************************/
 	public String getCaminho() {
 		return caminho;
 	}
@@ -66,10 +69,17 @@ public class RostoPrimeiraJanela extends JFrame {
 		btnCum.setEnabled(!filtrado.contains(Filtragem.filtro.getConcluido()));
 	}
 	/*********************************************************************/
-	private void remover() {
-		int indFiltrado = list.getSelectedIndex() +1;
-		String termoFiltrado = BancoDados.bdados.pegaObjeto(filtrado, indFiltrado);
+	private String encontra (){
+		String slc = list.getSelectedValue();
+		slc = slc.substring(slc.indexOf("] ")+2, slc.indexOf("=>")-3);
 		
+		int indFiltrado = BancoDados.bdados.achaLinha(this.filtrado, slc);
+		String termoFiltrado = BancoDados.bdados.pegaObjeto(this.filtrado, indFiltrado);
+		return termoFiltrado;
+	}
+	/*********************************************************************/
+	private void remover() {
+		String termoFiltrado = BancoDados.bdados.pegaObjeto(filtrado, BancoDados.bdados.achaLinha(this.filtrado, encontra()));
 		
 		Remocao rem = new Remocao(termoFiltrado);
 		
@@ -79,22 +89,20 @@ public class RostoPrimeiraJanela extends JFrame {
 		if (ace == JOptionPane.NO_OPTION || ace == JOptionPane.CANCEL_OPTION) {
 			rem.setVisible(false);
 		} else if (ace == JOptionPane.YES_OPTION) {
-			if (BancoDados.bdados.removeLinha(this.caminho, termoFiltrado)) {
+			if (1 == BancoDados.bdados.removeLinha(this.caminho, termoFiltrado)) {
 				JOptionPane.showMessageDialog(rem, termoFiltrado + "\n"
 						+ "removido com sucesso!");
 				rem.dispose();
 				reseta();
 			} else {
-				JOptionPane.showMessageDialog(rem, "Não removido.");
+				this.dispose();
 				rem.dispose();
 			}
 		}
 	}
 	/*********************************************************************/
-	private void Editar() {		
-		int indFiltrado = list.getSelectedIndex() +1;
-		String termoFiltrado = BancoDados.bdados.pegaObjeto(filtrado, indFiltrado);
-		
+	private void editar() {
+		String termoFiltrado = encontra();
 		
 		Edicao edit = new Edicao(termoFiltrado);
 		edit.setVisible(true);
@@ -108,15 +116,10 @@ public class RostoPrimeiraJanela extends JFrame {
 	}
 	/*********************************************************************/
 	private String[] objeta() {
-		String[] objetos = Filtragem.filtro.objeta(this.filtrado);
+		String[] objetos = Filtragem.filtro.objeta(this.filtrado, tf);
 		
 		if (objetos == null){
-			JOptionPane.showMessageDialog(null, "Lista Vazia...\nNada nesta lista.");
-			filtrado = getCaminho();
-			objetos = Filtragem.filtro.objeta(this.filtrado);
-			if (objetos == null){
-				return new String[] {"arquivo vazio"};
-			}
+			return new String[] {"Lista Vazia...\nNada nesta lista."};
 		}
 		
 		return objetos;
@@ -133,6 +136,8 @@ public class RostoPrimeiraJanela extends JFrame {
 				return values[index];
 			}
 		});
+		chckbxOb.setSelected(tf == 1 || tf == 3);
+		chckbxOpt.setSelected(tf ==2 || tf == 3);
 		habilita(false);
 	}
 	/*********************************************************************/
@@ -170,13 +175,19 @@ public class RostoPrimeiraJanela extends JFrame {
 		btnRem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				remover();
+				if (!btnRem.isEnabled()){
+				} else {
+					remover();					
+				}
 			}
 		});
 		btnEdi.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				Editar();
+				if (!btnEdi.isEnabled()){
+				} else {
+					editar();					
+				}
 			}
 		});
 		btnSem.addMouseListener(new MouseAdapter() {
@@ -214,8 +225,11 @@ public class RostoPrimeiraJanela extends JFrame {
 		btnPer.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				procuraFiltro();
-				muda();
+				if (!btnPer.isEnabled()){
+				} else {
+					percurso();
+					muda();		
+				}
 			}
 		});
 		btnResetar.addMouseListener(new MouseAdapter() {
@@ -239,13 +253,8 @@ public class RostoPrimeiraJanela extends JFrame {
 		});
 	}
 	/*********************************************************************/
-	private void procuraFiltro() {
-		String disc;
-		int indFiltrado;
-		
-		indFiltrado = list.getSelectedIndex() + 1;
-		disc = BancoDados.bdados.pegaObjeto(this.filtrado, indFiltrado);
-		
+	private void percurso() {
+		String disc = encontra();		
 		Principal.prin.lista(disc, Filtragem.filtro.percurso(caminho, disc));
 	}
 	/*********************************************************************/
@@ -343,8 +352,41 @@ public class RostoPrimeiraJanela extends JFrame {
 				jan.setLocationRelativeTo(getContentPane());
 			}
 		});
-		btnBusca.setBounds(20, 398, 89, 23);
+		btnBusca.setBounds(20, 434, 89, 23);
 		panel.add(btnBusca);
+		
+		chckbxOpt = new JCheckBox("Mostrar optativas");
+		chckbxOpt.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (chckbxOpt.isSelected()){
+					tf += 2;
+				} else {
+					tf -= 2;
+				}
+				reseta();
+			}
+		});
+		chckbxOpt.setSelected(true);
+		chckbxOpt.setBounds(20, 373, 189, 23);
+		chckbxOpt.setSelected(true);
+		panel.add(chckbxOpt);
+		
+		chckbxOb = new JCheckBox("Mostrar Obrigat\u00F3rias");
+		chckbxOb.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (chckbxOb.isSelected()) {
+					++tf;
+				} else {
+					--tf;
+				}
+				reseta();
+			}
+		});
+		chckbxOb.setBounds(20, 403, 189, 23);
+		chckbxOb.setSelected(true);
+		panel.add(chckbxOb);
 		
 		doMouse();
 		habilita(false);

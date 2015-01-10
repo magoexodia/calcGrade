@@ -20,6 +20,7 @@ public class Filtragem {
 	public final String sep1 = ";"; 
 	public final String sep2 = "-"; 
 	public final String semPre = "--;------;Sem pre-requisitos;;--;------";
+	public final String optativa = "optativa";
 	private Set<Integer> perc;
 	
 	public static final Filtragem filtro = new Filtragem();
@@ -200,6 +201,28 @@ public class Filtragem {
 		return numero;
 	}
 	
+	public boolean ehNum (CharSequence num){
+		for (int i = 0; i < num.length(); i++) {
+			switch (num.charAt(i)) {
+			case 9:	
+			case 8:	
+			case 7:	
+			case 6:
+			case 5:
+			case 4:
+			case 3:
+			case 2:
+			case 1:	
+			case 0:				
+				continue;
+
+			default:
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public String[] percurso (String caminho, String disc){
 		String sep = " ";
 		String[] tudo = BancoDados.bdados.pegaObjeto(caminho);
@@ -306,11 +329,8 @@ public class Filtragem {
 		for (String um : ob) {
 			String quem = um.split(sep1)[5];
 			objetos[i++] = (quem.equals(getAberto())?" +":quem.equals(getConcluido())?"OK":"- ")
-					+ " ("
-					+ um.split(sep1)[0] 
-					+ Acentos.acentuar.oOrdin+"sem) ["
-					+ um.split(sep1)[1] 
-					+ "] "
+					+ (eCodigo(um.split(sep1)[0])?" " + optativa:" (" + um.split(sep1)[0] + Acentos.acentuar.oOrdin+"sem)")
+					+ " [" + um.split(sep1)[1] + "] "
 					+ um.split(sep1)[2] 
 					+ " => {"
 					+ um.split(sep1)[3].replaceAll(sep2, ", ")
@@ -331,16 +351,38 @@ public class Filtragem {
 		for (int j = 0; j < objetos.length; j++) {
 			String quem = objetos[j].split(sep1)[5];
 			objetos[j] = (quem.equals(getAberto())?" +":quem.equals(getConcluido())?"OK":"- ")
-					+ " ("
-					+ objetos[j].split(sep1)[0] 
-					+ Acentos.acentuar.oOrdin+"sem) ["
-					+ objetos[j].split(sep1)[1] 
-					+ "] "
+					+ (eCodigo(objetos[j].split(sep1)[0])?" "+optativa+" ":" (" + objetos[j].split(sep1)[0]+Acentos.acentuar.oOrdin+"sem) ")
+					+ "[" + objetos[j].split(sep1)[1] + "] "
 					+ objetos[j].split(sep1)[2] 
-					+ " => {"
-					+ objetos[j].split(sep1)[3].replaceAll(sep2, ", ")
-					+ "}";
+					+ " => {" + objetos[j].split(sep1)[3].replaceAll(sep2, ", ") + "}";
 		}
 		return objetos;
+	}
+	public String[] objeta(String caminho, int mostrarTudo) {
+		/*
+		 * 0 para nada
+		 * 1      somente obrigatórias
+		 * 2      somente optativas
+		 * 3      tudo
+		 * */
+		String[] tudo = objeta(caminho);//objeta(BancoDados.bdados.pegaObjeto(caminho));
+		if (tudo == null){
+			return null;
+		}
+		if (mostrarTudo == 3){
+			return tudo;
+		}
+		
+		List<String> somente = new ArrayList<String>();	
+		for (int i = 0; i < tudo.length; i++) {
+			//if (!eCodigo((String) tudo[i].subSequence(tudo[i].indexOf("(") + 1, tudo[i].indexOf(Acentos.acentuar.oOrdin) - 1))){
+			if(mostrarTudo == 1 && !tudo[i].contains(optativa)){
+				somente.add(tudo[i]);
+			} else if(mostrarTudo == 2 && tudo[i].contains(optativa)){
+				somente.add(tudo[i]);
+			}
+		}
+		
+		return ListToArray(somente);
 	}
 }
